@@ -1,71 +1,121 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UniBudget ULIMA</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UniBudget ULIMA — Mi Balance</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header>
-    <div class="logo">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/Universidad_de_Lima_logo.svg" alt="ULIMA Logo">
-      <h1>UniBudget ULIMA</h1>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <!-- Logo: si la URL no carga, reemplaza por otra imagen o por texto -->
+        <img id="ulimaLogo" src="https://upload.wikimedia.org/wikipedia/commons/2/2e/Universidad_de_Lima_logo.svg" alt="ULIMA logo" />
+        <div>
+          <div class="app-name">UniBudget</div>
+          <div class="app-sub">ULIMA</div>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="btnNew" class="btn btn-primary">+ Agregar Transacción</button>
+        <button id="btnTheme" class="btn btn-ghost" title="Cambiar tema">🌓</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <!-- Balance card -->
+      <section class="balance-card card">
+        <div class="balance-left">
+          <div class="balance-title">Mi Balance</div>
+          <div class="balance-sub">Gestiona tus finanzas universitarias</div>
+
+          <div class="big-balance" id="bigBalance">S/ 0.00</div>
+
+          <div class="mini-stats">
+            <div class="stat">
+              <div class="stat-label">Ingresos</div>
+              <div class="stat-value income" id="totalIncome">+S/ 0.00</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Gastos</div>
+              <div class="stat-value expense" id="totalExpense">-S/ 0.00</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="balance-right">
+          <div id="chartWrapper"></div>
+          <div class="filters">
+            <button class="seg-btn active" data-filter="all">Todas</button>
+            <button class="seg-btn" data-filter="ingreso">Ingresos</button>
+            <button class="seg-btn" data-filter="gasto">Gastos</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Transactions list -->
+      <section class="tx-list card">
+        <div class="tx-header">
+          <h3>Transacciones</h3>
+          <input id="search" type="search" placeholder="Buscar (nota o categoría)"/>
+        </div>
+
+        <ul id="txs" class="list"></ul>
+
+        <div class="legend">
+          <div><span class="dot income-dot"></span> Ingreso</div>
+          <div><span class="dot expense-dot"></span> Gasto</div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      UniBudget — Prototipo para estudiantes de la Universidad de Lima • Datos guardados localmente
+    </footer>
+  </div>
+
+  <!-- Modal (hidden by default) -->
+  <div id="modal" class="modal hidden" role="dialog" aria-hidden="true">
+    <div class="modal-content card">
+      <h3 id="modalTitle">Agregar transacción</h3>
+      <form id="txForm">
+        <label>Fecha
+          <input type="date" id="date" required />
+        </label>
+        <label>Categoría
+          <select id="category">
+            <option>Matrícula</option>
+            <option>Cafetería ULIMA</option>
+            <option>Transporte</option>
+            <option>Materiales / Libros</option>
+            <option>Alojamiento</option>
+            <option>Entretenimiento</option>
+            <option>Salud</option>
+            <option>Otros</option>
+          </select>
+        </label>
+        <label>Tipo
+          <select id="type">
+            <option value="gasto">Gasto</option>
+            <option value="ingreso">Ingreso</option>
+          </select>
+        </label>
+        <label>Monto (S/)
+          <input type="number" id="amount" step="0.01" required />
+        </label>
+        <label>Nota
+          <input type="text" id="note" placeholder="Ej: Almuerzo en cafetería" />
+        </label>
+
+        <div class="modal-actions">
+          <button type="button" id="btnCancel" class="btn btn-ghost">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
     </div>
-    <nav>
-      <a href="#inicio">Inicio</a>
-      <a href="#funciones">Funciones</a>
-      <a href="#sobre">Sobre Nosotros</a>
-      <a href="#contacto">Contacto</a>
-    </nav>
-  </header>
-
-  <section id="inicio" class="hero">
-    <h2>Controla tus finanzas. Simplifica tu vida universitaria.</h2>
-    <p>UniBudget ULIMA te ayuda a registrar tus gastos, planificar tu presupuesto y alcanzar tus metas financieras mientras estudias.</p>
-    <button id="empezar">Empezar ahora</button>
-  </section>
-
-  <section id="funciones" class="features">
-    <h2>Funciones Principales</h2>
-    <div class="feature-container">
-      <div class="feature">
-        <h3>💰 Registro de gastos</h3>
-        <p>Guarda y clasifica tus gastos diarios fácilmente.</p>
-      </div>
-      <div class="feature">
-        <h3>📊 Presupuesto mensual</h3>
-        <p>Establece límites y visualiza tu progreso con gráficos simples.</p>
-      </div>
-      <div class="feature">
-        <h3>🎯 Metas financieras</h3>
-        <p>Define objetivos y sigue tus avances hacia ellos.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="sobre" class="about">
-    <h2>Sobre UniBudget ULIMA</h2>
-    <p>
-      Este proyecto fue creado como un prototipo académico inspirado en la Universidad de Lima.
-      Nuestro objetivo es ayudar a los estudiantes a mejorar su educación financiera con herramientas simples, visuales y accesibles.
-    </p>
-  </section>
-
-  <section id="contacto" class="contact">
-    <h2>Contáctanos</h2>
-    <form id="contactForm">
-      <input type="text" placeholder="Tu nombre" required>
-      <input type="email" placeholder="Tu correo institucional" required>
-      <textarea placeholder="Tu mensaje" rows="4" required></textarea>
-      <button type="submit">Enviar</button>
-    </form>
-  </section>
-
-  <footer>
-    <p>© 2025 UniBudget ULIMA — Proyecto académico inspirado en la Universidad de Lima.</p>
-  </footer>
+  </div>
 
   <script src="script.js"></script>
 </body>
